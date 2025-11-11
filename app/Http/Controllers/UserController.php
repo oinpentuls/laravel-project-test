@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserCreated;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -42,17 +45,26 @@ class UserController extends Controller
             'name' => 'required|string|min:3|max:50',
         ]);
 
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => bcrypt($validated['password']),
-        ]);
+        try {
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => bcrypt($validated['password']),
+            ]);
 
-        return response()->json([
-            "id" => $user->id,
-            "email" => $user->email,
-            "name" => $user->name,
-            "created_at" => $user->created_at,
-        ]);
+            UserCreated::dispatch($user);
+            
+            return response()->json([
+                "id" => $user->id,
+                "email" => $user->email,
+                "name" => $user->name,
+                "created_at" => $user->created_at,
+            ]);
+        } catch (Exception $e) {
+            Log::error('Failed to create user: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Failed to create user',
+            ], 500);
+        }
     }
 }
