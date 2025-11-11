@@ -1,5 +1,42 @@
 # Laravel Project Test
 
+## Installation
+clone this repository
+```
+git clone https://github.com/oinpentuls/laravel-project-test.git
+```
+
+install dependencies
+```
+cd laravel-project-test
+composer install
+```
+
+create .env file
+```
+cp .env.example .env
+```
+
+set database connection
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=laravel_project_test
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+run migrations and seeders
+```
+php artisan migrate --seed
+```
+
+run development server
+```
+php artisan serve
+```
+
 Requirement:
 - [x] <a href="#get-users">Get Users</a>
 - [x] <a href="#create-user">Create Users</a>
